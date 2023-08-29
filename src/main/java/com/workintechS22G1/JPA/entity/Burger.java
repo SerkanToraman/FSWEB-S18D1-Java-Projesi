@@ -31,7 +31,7 @@ public class Burger {
     @Enumerated(EnumType.STRING)
     private BreadType breadType;
 
-    @Column(name="contests")
-    private List<String> contests;
+    @Column(name="contents")
+    private List<String> contents;
 
 }
