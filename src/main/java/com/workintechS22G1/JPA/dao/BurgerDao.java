@@ -2,6 +2,7 @@ package com.workintechS22G1.JPA.dao;
 
 import com.workintechS22G1.JPA.entity.Burger;
 import com.workintechS22G1.JPA.entity.enums.BreadType;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

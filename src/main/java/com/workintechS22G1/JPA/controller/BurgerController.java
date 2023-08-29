@@ -3,6 +3,8 @@ package com.workintechS22G1.JPA.controller;
 import com.workintechS22G1.JPA.dao.BurgerDao;
 import com.workintechS22G1.JPA.dao.BurgerDaoImpl;
 import com.workintechS22G1.JPA.entity.Burger;
+import com.workintechS22G1.JPA.entity.enums.BreadType;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class BurgerController {
     public List<Burger> findAll(){return burgerDao.findAll();}
 
     @GetMapping("/{id}")
-    public Burger find( @PathVariable int id){ return burgerDao.findById(id);}
+    public Burger find(@Positive @PathVariable int id){ return burgerDao.findById(id);}
 
     @GetMapping("/findByPrice/{price}")
     public List<Burger> findByPrice(@PathVariable int price){
@@ -33,6 +35,12 @@ public class BurgerController {
     @GetMapping("/findByContent/{content}")
     public List<Burger> findByContent(@PathVariable String content){
         return burgerDao.findByContent(content);
+    }
+
+    @GetMapping("/findByBreadType/{breadType}")
+    public List<Burger> findByBreadType(@PathVariable String breadType){
+        BreadType breadTypeEnum = BreadType.valueOf(breadType);
+        return burgerDao.findByBreadType(breadTypeEnum);
     }
 
     @PostMapping("/")

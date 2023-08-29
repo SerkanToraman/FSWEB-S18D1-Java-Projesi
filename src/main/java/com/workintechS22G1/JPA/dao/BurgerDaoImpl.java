@@ -6,8 +6,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -37,24 +40,31 @@ public class BurgerDaoImpl implements BurgerDao {
 
     @Override
     public List<Burger> findByPrice(double price) {
-        TypedQuery<Burger> query =entityManager.createQuery("SELECT b FROM burger b WHERE b.price>=: price  ORDER BY b.price DESC",Burger.class);
+        TypedQuery<Burger> query =entityManager.createQuery("SELECT b FROM Burger b WHERE b.price>=: price  ORDER BY b.price desc",Burger.class);
         query.setParameter("price",price);
         return query.getResultList();
     }
 
     @Override
     public List<Burger> findByBreadType(BreadType breadType) {
-        TypedQuery<Burger> query = entityManager.createQuery("SELECT b FROM burger b WHERE b.breadTYPE =:breadType ORDER BY name ASC",Burger.class);
-        query.setParameter("breadType", BreadType.WHITE);
+        TypedQuery<Burger> query = entityManager.createQuery("SELECT b FROM Burger b WHERE b.breadType = :breadType", Burger.class);
+        query.setParameter("breadType", breadType);
         return query.getResultList();
-
     }
+
 
     @Override
     public List<Burger> findByContent(String content) {
-        TypedQuery<Burger> query = entityManager.createQuery("SELECT b FROM Burger b WHERE b.contents ILIKE '%:content%'",Burger.class);
-        query.setParameter("content", content);
-        return query.getResultList();
+        TypedQuery<Burger> query = entityManager.createQuery("SELECT b FROM Burger b", Burger.class);
+        List<Burger> burgers = query.getResultList();
+        List<Burger> filteredBurgers = new ArrayList<>();
+        for (Burger burger : burgers) {
+            List<String> burgerContents = burger.getContents();
+            if (burgerContents.stream().anyMatch(c -> c.contains(content))) {
+                filteredBurgers.add(burger);
+            }
+        }
+        return filteredBurgers;
     }
     @Transactional
     @Override
